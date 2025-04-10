@@ -14,7 +14,7 @@ test.describe('Sign-up Country Dropdown', () => {
     await page.fill('input[name="email"]', 'test+apr10@example.com');
     await page.fill('input[name="password"]', 'QWErtz123456!');
 
-    // Select checkbox 'acceptTos'
+    // Select checkbox 'acceptTos' (by clicking on the top left corner of the element since there are hyperlinks in the text)
     const element = await page.locator('input[name="acceptTos"] >> xpath=..');
     const boundingBox = await element.boundingBox();
     await page.mouse.click(boundingBox.x, boundingBox.y); 
@@ -25,13 +25,47 @@ test.describe('Sign-up Country Dropdown', () => {
     // Click the submit button
     await page.getByRole('button', { name: 'Try for free' }).click();
 
+    // Enter first name
+    await page.fill('input[name="firstname"]', 'Oleks');
+
+    // Enter last name
+    await page.fill('input[name="lastname"]', 'Bar');
+
+    // Enter a number
+    await page.fill('input[name="phoneNumber"]', '0123456789');
+
+    // Click the 'Next step' button
+    await page.locator('button[type="submit"]').click();
+
+    // Enter company name
+    await page.fill('input[name="organizationName"]', 'QA test');
+
+    // Click on the country select field
+    await page.locator('input[name="country"]').click();
+
+    // Step 1: Type partial country name to trigger filtering
+    await page.fill('input[name="country"]', 'Swe'); // or 'Schwe' if fuzzy search
+
+    // Step 2: Wait until filtered list appears
+    await page.waitForSelector('[data-testid="autocomplete-menu-portal"] li:has-text("Swe")', {
+      state: 'visible',
+    });
+
+    // Step 3: Get the locator for "Sweden"
+    const swedenOption = page.locator('div[data-testid="autocomplete-menu-portal"] li div').first();
+
+    // Step 4: Wait until it's stable (force re-check every frame)
+    await swedenOption.waitFor({ state: 'visible' });
+    await page.waitForTimeout(1000); // allow animations to settle
+
+    // Step 5: Click with force fallback (if transitions still interfere)
+    await swedenOption.click();
 
 
-    // const countryDropdown = page.getByLabel('Where’s your company registered?');
-    // await countryDropdown.click();
+    await page.locator('input[name="hdyhau"]').click();
 
-    // const swedenOption = page.getByRole('option', { name: 'Sweden' });
-    // await expect(swedenOption).toBeVisible();
+    await page.getByText('Soziale Medien (LinkedIn, Instagram, usw.)').click();
+
   });
 
   // test('should allow selecting Sweden', async ({ page }) => {
