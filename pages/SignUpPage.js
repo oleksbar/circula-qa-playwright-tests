@@ -111,9 +111,6 @@ class SignUpPage {
       state: "visible",
     });
 
-    // Wait until it's stable
-    await this.page.waitForTimeout(1000);
-
     // Due to "transparent or off-screen overlay" use the browser context to perform the click
     await this.page.evaluate((label) => {
       const items = this.document.querySelectorAll(
@@ -155,6 +152,21 @@ class SignUpPage {
     const successBox = this.page.locator(this.signUpSuccessSelector);
     await expect(successBox).toBeVisible();
     await expect(successBox.getByText("Great! Now please verify your email")).toBeVisible();
+  }
+
+  // Fill not listed country and verify "contact us" message
+  async fillNotListedCountry(label) {
+    await this.page.locator(this.countryInputSelector).click();
+    await this.page.waitForTimeout(1000);
+    await this.page.fill(this.countryInputSelector, label); // Trigger filtering
+    await this.page.waitForSelector(this.countryDropdownSelector, {
+      state: "visible",
+    });
+
+    // Wait until it's stable
+    await this.page.waitForTimeout(1000);
+
+    await expect(this.page.locator(this.countryDropdownSelector)).toHaveText('Can’t find your country? Contact us.');
   }
 }
 
