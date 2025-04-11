@@ -3,29 +3,58 @@ const { expect } = require("@playwright/test");
 class SignUpPage {
   constructor(page) {
     this.page = page;
+    this.emailFieldSelector = 'input[name="email"]';
+    this.passwordFieldSelector = 'input[name="password"]';
     this.countryInputSelector = 'input[name="country"]';
     this.countryDropdownSelector =
       '[data-testid="autocomplete-menu-portal"] li';
+    this.hdyhauInputSelector = 'input[name="hdyhau"]';
+    this.hdyhauDropdownOptionSocialMediaSelector =
+      'div[data-valuetext="Social Media (LinkedIn, Instagram, etc.)"]';
+    this.checkboxAcceptTosSelector = 'input[name="acceptTos"] >> xpath=..';
+    this.checkboxSendNewsletterSelector =
+      'input[name="sendNewsletter"] >> xpath=..';
+    this.submitButtonSelector = 'button[type="submit"]';
+  }
+
+  //Fill email
+  async fillEmail(email) {
+    await this.page.fill(this.emailFieldSelector, email);
+  }
+
+  //Fill password
+  async fillPassword(passsword) {
+    await this.page.fill(this.passwordFieldSelector, passsword);
+  }
+
+  // Select checkbox 'acceptTos' (by clicking on the top left corner of the element since there are hyperlinks in the text)
+  async selectCheckboxAcceptTos() {
+    const element = await this.page.locator(this.checkboxAcceptTosSelector);
+    const boundingBox = await element.boundingBox();
+    await this.page.mouse.click(boundingBox.x, boundingBox.y);
+  }
+
+  // Select checkbox 'sendNewsletter'
+  async selectCheckboxSendNewsletter() {
+    await this.page.locator(this.checkboxSendNewsletterSelector).check();
+  }
+
+  // Click the submit button
+  async clickSubmitButton() {
+    await this.page.locator(this.submitButtonSelector).click();
   }
 
   // Due to "transparent or off-screen overlay" use the browser context to perform the click
   async selectCountryDropdownOption(label) {
     await this.page.locator(this.countryInputSelector).click();
-
     await this.page.waitForTimeout(1000);
-
     await this.page.fill(this.countryInputSelector, label); // Trigger filtering
     await this.page.waitForSelector(this.countryDropdownSelector, {
       state: "visible",
     });
 
-    // Get the locator for "Sweden"
-    const swedenOption = this.page.locator(
-      'div[data-testid="autocomplete-menu-portal"] li:has-text("Sweden")'
-    );
-
     // Wait until it's stable
-    await this.page.waitForTimeout(1000); // allow animations to settle
+    await this.page.waitForTimeout(1000);
 
     // Due to "transparent or off-screen overlay" use the browser context to perform the click
     await this.page.evaluate((label) => {
@@ -40,10 +69,24 @@ class SignUpPage {
       }
       throw new Error(`Option "${label}" not found in dropdown`);
     }, label);
+
+    // Verify the selected value in the field
+    await expect(this.page.locator(this.countryInputSelector)).toHaveValue(
+      label
+    );
   }
 
-  async expectSelectedCountryValue(label) {
-    await expect(this.page.locator(this.countryInputSelector)).toHaveValue(
+  async selectHdyhauDropdownOption(label) {
+    // Click on the hdyhau select field
+    await this.page.locator(this.hdyhauInputSelector).click();
+
+    // Select value: Social Media (LinkedIn, Instagram, etc.)
+    await this.page
+      .locator(this.hdyhauDropdownOptionSocialMediaSelector)
+      .click();
+
+    // Verify the selected value in the field
+    await expect(this.page.locator(this.hdyhauInputSelector)).toHaveValue(
       label
     );
   }

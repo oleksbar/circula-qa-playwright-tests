@@ -1,7 +1,7 @@
 // playwright.config.js
 module.exports = {
     testDir: './tests',
-    timeout: 12000,     
+    timeout: 30000,     
     use: {
       headless: false,   
       viewport: { width: 1280, height: 800 },
