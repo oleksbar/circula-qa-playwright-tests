@@ -16,7 +16,7 @@ test.describe("Sign-up Country Dropdown", () => {
     await acceptAllButton.click();
 
     // Sign up - Step 1
-    await signUpPage.fillEmail("test+apr11@example.com");
+    await signUpPage.fillEmailWithUniqueAddress();
     await signUpPage.fillPassword("QWErtz123456!");
     await signUpPage.selectCheckboxAcceptTos();
     await signUpPage.selectCheckboxSendNewsletter();
@@ -33,19 +33,22 @@ test.describe("Sign-up Country Dropdown", () => {
     // Click the submit button
     await signUpPage.clickSubmitButton();
 
-    /**
-     * STEP3
-     */
-    await signUpPage.verifyStep3isLoaded()
-    await signUpPage.fillCompanyName("QA test")
-
+    // Sign up - Step 3
+    await signUpPage.verifyStep3isLoaded();
+    await signUpPage.fillCompanyName("QA test");
     await signUpPage.selectCountryDropdownOption("Sweden");
     await signUpPage.selectHdyhauDropdownOption(
       "Social Media (LinkedIn, Instagram, etc.)"
     );
+
+    // Click the submit button
+    await signUpPage.clickSubmitButton();
+
+    // Verify user signed up successfully
+    await signUpPage.verifySignUpSuccessWindow();
   });
 
-  // test('should allow selecting Sweden', async ({ page }) => {
+  // test('should not sign up a user when no country selected', async ({ page }) => {
   //   await page.goto('https://circula-qa-challenge.vercel.app/users/sign_up');
 
   //   const countryDropdown = page.getByLabel('Where’s your company registered?');
