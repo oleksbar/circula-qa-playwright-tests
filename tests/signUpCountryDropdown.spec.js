@@ -2,8 +2,8 @@
 const { test, expect } = require("@playwright/test");
 const { SignUpPage } = require("../pages/SignUpPage");
 
-test.describe("Sign-up Country Dropdown", () => {
-  test("should sign up a user with Sweden country selected", async ({
+test.describe("Sign-up a new user with country Sweden and without country", () => {
+  test.beforeEach(async ({
     page,
   }) => {
     const signUpPage = new SignUpPage(page);
@@ -27,7 +27,7 @@ test.describe("Sign-up Country Dropdown", () => {
     // Sign up - Step 2
     await signUpPage.verifyStep2isLoaded();
     await signUpPage.enterFirstName("Oleks");
-    await signUpPage.enterLastName("Oleks");
+    await signUpPage.enterLastName("Bar");
     await signUpPage.enterPhoneNumber("0123456789");
 
     // Click the submit button
@@ -36,6 +36,13 @@ test.describe("Sign-up Country Dropdown", () => {
     // Sign up - Step 3
     await signUpPage.verifyStep3isLoaded();
     await signUpPage.fillCompanyName("QA test");
+  });
+
+  test("should sign up a user with Sweden country selected", async ({
+    page,
+  }) => {
+    const signUpPage = new SignUpPage(page);
+
     await signUpPage.selectCountryDropdownOption("Sweden");
     await signUpPage.selectHdyhauDropdownOption(
       "Social Media (LinkedIn, Instagram, etc.)"
@@ -48,13 +55,11 @@ test.describe("Sign-up Country Dropdown", () => {
     await signUpPage.verifySignUpSuccessWindow();
   });
 
-  // test('should not sign up a user when no country selected', async ({ page }) => {
-  //   await page.goto('https://circula-qa-challenge.vercel.app/users/sign_up');
+  test('should suggest to contact us when not listed country is filled in', async ({
+    page,
+  }) => {
+    const signUpPage = new SignUpPage(page);
 
-  //   const countryDropdown = page.getByLabel('Where’s your company registered?');
-  //   await countryDropdown.click();
-  //   await page.getByRole('option', { name: 'Sweden' }).click();
-
-  //   await expect(countryDropdown).toHaveText(/Sweden/);
-  // });
+    await signUpPage.fillNotListedCountry("China")
+  });
 });
