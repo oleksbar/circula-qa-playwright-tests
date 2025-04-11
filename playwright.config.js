@@ -1,9 +1,11 @@
 // playwright.config.js
 module.exports = {
     testDir: './tests',
-    timeout: 8000,     
+    timeout: 12000,     
     use: {
       headless: false,   
-      browserName: 'chromium', 
+      viewport: { width: 1280, height: 800 },
+      browserName: 'chromium',
+      baseURL: 'https://circula-qa-challenge.vercel.app/users/sign_in', 
     },
   };
