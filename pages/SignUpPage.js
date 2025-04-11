@@ -15,6 +15,10 @@ class SignUpPage {
     this.checkboxSendNewsletterSelector =
       'input[name="sendNewsletter"] >> xpath=..';
     this.submitButtonSelector = 'button[type="submit"]';
+    this.step2labelSelector = 'text=Your contact details';
+    this.firstNameSelector = 'input[name="firstname"]';
+    this.lastNameSelector = 'input[name="lastname"]';
+    this.phoneNumberSelector = 'input[name="phoneNumber"]';
   }
 
   //Fill email
@@ -42,6 +46,29 @@ class SignUpPage {
   // Click the submit button
   async clickSubmitButton() {
     await this.page.locator(this.submitButtonSelector).click();
+  }
+
+  // Check that Step 2 is loaded successfully
+  async verifyStep2isLoaded() {
+    await this.page.waitForTimeout(1000);
+    await this.page.waitForSelector(this.step2labelSelector);
+  }
+
+  // Enter first name
+  async enterFirstName(firstName) {
+    const firstNameInput = this.page.locator(this.firstNameSelector);
+    await expect(firstNameInput).toBeVisible();
+    await firstNameInput.fill(firstName);
+  }
+
+  // Enter last name
+  async enterLastName(lastName) {
+    await this.page.fill(this.lastNameSelector, lastName);
+  }
+
+  // Enter a number
+  async enterPhoneNumber(phoneNumber) {
+    await this.page.fill(this.phoneNumberSelector, phoneNumber);
   }
 
   // Due to "transparent or off-screen overlay" use the browser context to perform the click

@@ -1,9 +1,11 @@
 // tests/signUpCountryDropdown.spec.js
 const { test, expect } = require("@playwright/test");
-const { SignUpPage } = require('../pages/SignUpPage');
+const { SignUpPage } = require("../pages/SignUpPage");
 
 test.describe("Sign-up Country Dropdown", () => {
-  test("should sign up a user with Sweden country selected", async ({ page }) => {
+  test("should sign up a user with Sweden country selected", async ({
+    page,
+  }) => {
     const signUpPage = new SignUpPage(page);
 
     // Go to the sign up page
@@ -14,44 +16,37 @@ test.describe("Sign-up Country Dropdown", () => {
     await acceptAllButton.click();
 
     //Step 1
-    await signUpPage.fillEmail("test+apr11@example.com")
-    await signUpPage.fillPassword("QWErtz123456!")
-    await signUpPage.selectCheckboxAcceptTos()
-    await signUpPage.selectCheckboxSendNewsletter()
+    await signUpPage.fillEmail("test+apr11@example.com");
+    await signUpPage.fillPassword("QWErtz123456!");
+    await signUpPage.selectCheckboxAcceptTos();
+    await signUpPage.selectCheckboxSendNewsletter();
 
     // Click the submit button
-    await signUpPage.clickSubmitButton()
+    await signUpPage.clickSubmitButton();
 
     /**
      * STEP2
      */
-    await page.waitForTimeout(1000);
-    await page.waitForSelector('text=Your contact details');
+    await signUpPage.verifyStep2isLoaded();
+    await signUpPage.enterFirstName("Oleks")
+    await signUpPage.enterLastName("Oleks")
+    await signUpPage.enterPhoneNumber("0123456789")
 
-    // Enter first name
-    const firstNameInput = page.locator('input[name="firstname"]');
-    await expect(firstNameInput).toBeVisible();
-    await firstNameInput.fill('Oleks');
-
-    // Enter last name
-    await page.fill('input[name="lastname"]', "Bar");
-
-    // Enter a number
-    await page.fill('input[name="phoneNumber"]', "0123456789");
-
-    // Click the 'Next step' button
-    await page.locator('button[type="submit"]').click();
+    // Click the submit button
+    await signUpPage.clickSubmitButton();
 
     /**
      * STEP3
      */
-    await page.waitForSelector('text=Company information');
+    await page.waitForSelector("text=Company information");
 
     // Enter company name
     await page.fill('input[name="organizationName"]', "QA test");
 
-    await signUpPage.selectCountryDropdownOption('Sweden');
-    await signUpPage.selectHdyhauDropdownOption('Social Media (LinkedIn, Instagram, etc.)');
+    await signUpPage.selectCountryDropdownOption("Sweden");
+    await signUpPage.selectHdyhauDropdownOption(
+      "Social Media (LinkedIn, Instagram, etc.)"
+    );
   });
 
   // test('should allow selecting Sweden', async ({ page }) => {
