@@ -1,8 +1,11 @@
 // tests/signUpCountryDropdown.spec.js
 const { test, expect } = require("@playwright/test");
+const { SignUpPage } = require('../pages/SignUpPage');
 
 test.describe("Sign-up Country Dropdown", () => {
-  test("should contain Sweden in the dropdown", async ({ page }) => {
+  test("should sign up a user with Sweden country selected", async ({ page }) => {
+    const formPage = new SignUpPage(page);
+
     // Go to the sign up page
     await page.goto("https://circula-qa-challenge.vercel.app/users/sign_up");
 
@@ -31,6 +34,7 @@ test.describe("Sign-up Country Dropdown", () => {
     /**
      * STEP2
      */
+    await page.waitForTimeout(2000);
     await page.waitForSelector('text=Your contact details');
 
     // Enter first name
@@ -50,48 +54,13 @@ test.describe("Sign-up Country Dropdown", () => {
     /**
      * STEP3
      */
+    await page.waitForSelector('text=Company information');
+
     // Enter company name
     await page.fill('input[name="organizationName"]', "QA test");
 
-    // Click on the country select field
-    await page.locator('input[name="country"]').click();
-
-    await page.waitForTimeout(1000);
-
-    // Type partial country name to trigger filtering
-    await page.fill('input[name="country"]', "Sweden"); // or 'Schwe' if fuzzy search
-
-    // Wait until filtered list appears
-    await page.waitForSelector(
-      '[data-testid="autocomplete-menu-portal"] li:has-text("Sweden")',
-      {
-        state: "visible",
-      }
-    );
-
-    // Get the locator for "Sweden"
-    const swedenOption = page.locator(
-      'div[data-testid="autocomplete-menu-portal"] li:has-text("Sweden")'
-    );
-
-    // Wait until it's stable
-    await page.waitForTimeout(1000); // allow animations to settle
-
-    // Due to "transparent or off-screen overlay" use the browser context to perform the click
-    await page.evaluate(() => {
-      const items = document.querySelectorAll(
-        '[data-testid="autocomplete-menu-portal"] li'
-      );
-      for (const item of items) {
-        if (item.textContent?.trim() === "Sweden") {
-          item.click();
-          break;
-        }
-      }
-    });
-
-    // Verify the field has selected value: Sweden
-    await expect(page.locator('input[name="country"]')).toHaveValue("Sweden");
+    await formPage.selectCountryDropdownOption('Sweden');
+    await formPage.expectSelectedCountryValue('Sweden');
 
     // Click on the hdyhau select field
     await page.locator('input[name="hdyhau"]').click();
