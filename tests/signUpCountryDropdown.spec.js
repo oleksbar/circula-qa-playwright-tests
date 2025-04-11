@@ -15,7 +15,7 @@ test.describe("Sign-up Country Dropdown", () => {
     const acceptAllButton = page.getByRole("button", { name: "Accept All" });
     await acceptAllButton.click();
 
-    //Step 1
+    // Sign up - Step 1
     await signUpPage.fillEmail("test+apr11@example.com");
     await signUpPage.fillPassword("QWErtz123456!");
     await signUpPage.selectCheckboxAcceptTos();
@@ -24,13 +24,11 @@ test.describe("Sign-up Country Dropdown", () => {
     // Click the submit button
     await signUpPage.clickSubmitButton();
 
-    /**
-     * STEP2
-     */
+    // Sign up - Step 2
     await signUpPage.verifyStep2isLoaded();
-    await signUpPage.enterFirstName("Oleks")
-    await signUpPage.enterLastName("Oleks")
-    await signUpPage.enterPhoneNumber("0123456789")
+    await signUpPage.enterFirstName("Oleks");
+    await signUpPage.enterLastName("Oleks");
+    await signUpPage.enterPhoneNumber("0123456789");
 
     // Click the submit button
     await signUpPage.clickSubmitButton();
@@ -38,10 +36,8 @@ test.describe("Sign-up Country Dropdown", () => {
     /**
      * STEP3
      */
-    await page.waitForSelector("text=Company information");
-
-    // Enter company name
-    await page.fill('input[name="organizationName"]', "QA test");
+    await signUpPage.verifyStep3isLoaded()
+    await signUpPage.fillCompanyName("QA test")
 
     await signUpPage.selectCountryDropdownOption("Sweden");
     await signUpPage.selectHdyhauDropdownOption(

@@ -15,10 +15,12 @@ class SignUpPage {
     this.checkboxSendNewsletterSelector =
       'input[name="sendNewsletter"] >> xpath=..';
     this.submitButtonSelector = 'button[type="submit"]';
-    this.step2labelSelector = 'text=Your contact details';
+    this.step2labelSelector = "text=Your contact details";
     this.firstNameSelector = 'input[name="firstname"]';
     this.lastNameSelector = 'input[name="lastname"]';
     this.phoneNumberSelector = 'input[name="phoneNumber"]';
+    this.step3labelSelector = 'text=Company information';
+    this.companyNameSelector = 'input[name="organizationName"]'
   }
 
   //Fill email
@@ -50,8 +52,7 @@ class SignUpPage {
 
   // Check that Step 2 is loaded successfully
   async verifyStep2isLoaded() {
-    await this.page.waitForTimeout(1000);
-    await this.page.waitForSelector(this.step2labelSelector);
+    await expect(this.page.locator(this.step2labelSelector)).toBeVisible({ timeout: 5000 });
   }
 
   // Enter first name
@@ -69,6 +70,15 @@ class SignUpPage {
   // Enter a number
   async enterPhoneNumber(phoneNumber) {
     await this.page.fill(this.phoneNumberSelector, phoneNumber);
+  }
+
+  // Check that Step 3 is loaded successfully
+  async verifyStep3isLoaded() {
+    await expect(this.page.locator(this.step3labelSelector)).toBeVisible({ timeout: 5000 });
+  }
+  // Fill company name
+  async fillCompanyName(companyName) {
+    await this.page.fill(this.companyNameSelector, companyName);
   }
 
   // Due to "transparent or off-screen overlay" use the browser context to perform the click
