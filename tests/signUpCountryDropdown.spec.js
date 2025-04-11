@@ -4,7 +4,7 @@ const { SignUpPage } = require('../pages/SignUpPage');
 
 test.describe("Sign-up Country Dropdown", () => {
   test("should sign up a user with Sweden country selected", async ({ page }) => {
-    const formPage = new SignUpPage(page);
+    const signUpPage = new SignUpPage(page);
 
     // Go to the sign up page
     await page.goto("https://circula-qa-challenge.vercel.app/users/sign_up");
@@ -13,28 +13,19 @@ test.describe("Sign-up Country Dropdown", () => {
     const acceptAllButton = page.getByRole("button", { name: "Accept All" });
     await acceptAllButton.click();
 
-    /**
-     * STEP1
-     */
-    // Fill email and password
-    await page.fill('input[name="email"]', "test+apr10@example.com");
-    await page.fill('input[name="password"]', "QWErtz123456!");
-
-    // Select checkbox 'acceptTos' (by clicking on the top left corner of the element since there are hyperlinks in the text)
-    const element = await page.locator('input[name="acceptTos"] >> xpath=..');
-    const boundingBox = await element.boundingBox();
-    await page.mouse.click(boundingBox.x, boundingBox.y);
-
-    // Select checkbox 'sendNewsletter'
-    await page.locator('input[name="sendNewsletter"] >> xpath=..').check();
+    //Step 1
+    await signUpPage.fillEmail("test+apr11@example.com")
+    await signUpPage.fillPassword("QWErtz123456!")
+    await signUpPage.selectCheckboxAcceptTos()
+    await signUpPage.selectCheckboxSendNewsletter()
 
     // Click the submit button
-    await page.getByRole("button", { name: "Try for free" }).click();
+    await signUpPage.clickSubmitButton()
 
     /**
      * STEP2
      */
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     await page.waitForSelector('text=Your contact details');
 
     // Enter first name
@@ -59,23 +50,8 @@ test.describe("Sign-up Country Dropdown", () => {
     // Enter company name
     await page.fill('input[name="organizationName"]', "QA test");
 
-    await formPage.selectCountryDropdownOption('Sweden');
-    await formPage.expectSelectedCountryValue('Sweden');
-
-    // Click on the hdyhau select field
-    await page.locator('input[name="hdyhau"]').click();
-
-    await page.waitForTimeout(1000);
-
-    // Select value: Social Media (LinkedIn, Instagram, etc.)
-    await page
-      .locator('div[data-valuetext="Social Media (LinkedIn, Instagram, etc.)"]')
-      .click();
-
-    // Verify the selected value in the field
-    await expect(page.locator('input[name="hdyhau"]')).toHaveValue(
-      "Social Media (LinkedIn, Instagram, etc.)"
-    );
+    await signUpPage.selectCountryDropdownOption('Sweden');
+    await signUpPage.selectHdyhauDropdownOption('Social Media (LinkedIn, Instagram, etc.)');
   });
 
   // test('should allow selecting Sweden', async ({ page }) => {
