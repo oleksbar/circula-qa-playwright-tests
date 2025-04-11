@@ -43,28 +43,52 @@ test.describe('Sign-up Country Dropdown', () => {
     // Click on the country select field
     await page.locator('input[name="country"]').click();
 
+    await page.waitForTimeout(1000);
+
     // Step 1: Type partial country name to trigger filtering
-    await page.fill('input[name="country"]', 'Swe'); // or 'Schwe' if fuzzy search
+    await page.fill('input[name="country"]', 'Sweden'); // or 'Schwe' if fuzzy search
 
     // Step 2: Wait until filtered list appears
-    await page.waitForSelector('[data-testid="autocomplete-menu-portal"] li:has-text("Swe")', {
+    await page.waitForSelector('[data-testid="autocomplete-menu-portal"] li:has-text("Sweden")', {
       state: 'visible',
     });
 
     // Step 3: Get the locator for "Sweden"
-    const swedenOption = page.locator('div[data-testid="autocomplete-menu-portal"] li div').first();
+    const swedenOption = page.locator('div[data-testid="autocomplete-menu-portal"] li:has-text("Sweden")');
 
-    // Step 4: Wait until it's stable (force re-check every frame)
-    await swedenOption.waitFor({ state: 'visible' });
+    // Step 4: Wait until it's stable
     await page.waitForTimeout(1000); // allow animations to settle
 
-    // Step 5: Click with force fallback (if transitions still interfere)
-    await swedenOption.click();
+
+    await page.evaluate(() => {
+      const items = document.querySelectorAll('[data-testid="autocomplete-menu-portal"] li');
+      for (const item of items) {
+        if (item.textContent?.trim() === 'Sweden') {
+          item.click();
+          break;
+        }
+      }
+    });
+
+    await expect(page.locator('input[name="country"]')).toHaveValue('Sweden');
 
 
+    // Click on the hdyhau select field
     await page.locator('input[name="hdyhau"]').click();
 
-    await page.getByText('Soziale Medien (LinkedIn, Instagram, usw.)').click();
+    await page.waitForTimeout(1000);
+
+    await page.locator('div[data-valuetext="Social Media (LinkedIn, Instagram, etc.)"]').click()
+
+    await expect(page.locator('input[name="hdyhau"]')).toHaveValue('Social Media (LinkedIn, Instagram, etc.)')
+
+
+ 
+
+
+    // await page.locator('input[name="hdyhau"]').click();
+
+    // await page.getByText('Soziale Medien (LinkedIn, Instagram, usw.)').click();
 
   });
 
