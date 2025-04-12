@@ -8,7 +8,7 @@ test.describe("Sign-up a new user with country Sweden and without country", () =
   }) => {
     const signUpPage = new SignUpPage(page);
 
-    // Go to the sign up page
+    // Go to sign up page
     await page.goto("https://circula-qa-challenge.vercel.app/users/sign_up");
 
     // Accept cookies/consent dialog
@@ -21,7 +21,7 @@ test.describe("Sign-up a new user with country Sweden and without country", () =
     await signUpPage.selectCheckboxAcceptTos();
     await signUpPage.selectCheckboxSendNewsletter();
 
-    // Click the submit button
+    // Click submit button
     await signUpPage.clickSubmitButton();
 
     // Sign up - Step 2
@@ -30,7 +30,7 @@ test.describe("Sign-up a new user with country Sweden and without country", () =
     await signUpPage.enterLastName("Bar");
     await signUpPage.enterPhoneNumber("0123456789");
 
-    // Click the submit button
+    // Click submit button
     await signUpPage.clickSubmitButton();
 
     // Sign up - Step 3
@@ -48,7 +48,7 @@ test.describe("Sign-up a new user with country Sweden and without country", () =
       "Social Media (LinkedIn, Instagram, etc.)"
     );
 
-    // Click the submit button
+    // Click submit button
     await signUpPage.clickSubmitButton();
 
     // Verify user signed up successfully

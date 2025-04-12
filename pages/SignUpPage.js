@@ -163,7 +163,7 @@ class SignUpPage {
       state: "visible",
     });
 
-    // Wait until it's stable
+    // Wait until it's stable 
     await this.page.waitForTimeout(1000);
 
     await expect(this.page.locator(this.countryDropdownSelector)).toHaveText('Can’t find your country? Contact us.');
@@ -171,3 +171,4 @@ class SignUpPage {
 }
 
 module.exports = { SignUpPage };
+
